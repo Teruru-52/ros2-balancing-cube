@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find-pkg-share micro_ros_agent)/launch/micro_ros_agent_launch.py">
+    </include>
+  <node pkg="cube_sensor" exec="cube_sensor_node" name="cube_sensor_node" output="screen"/>
+</launch>
