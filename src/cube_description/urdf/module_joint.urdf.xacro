@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <!-- Define macro for defining a module joint -->
+  <xacro:macro name="module_joint" params="parent index *joint_origin">
+    <joint name="module${index}_joint" type="revolute">
+      <axis xyz="0 0 1"/> 
+      <xacro:insert_block name="joint_origin"/>
+      <parent link="${parent}"/>
+      <child link="module${index}_link"/>
+      <limit lower="-${pi}" upper="${pi}" effort="30" velocity="10"/>
+    </joint>
+  </xacro:macro>
+
+</robot>

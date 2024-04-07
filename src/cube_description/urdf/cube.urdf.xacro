@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<robot name="balancing_cube" xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- <xacro:include filename="$(find cube_description)/urdf/common_properties.xacro"/> -->
+  <xacro:include filename="/home/terunuma/ros2-balancing-cube/src/cube_description/urdf/common_properties.xacro"/>
+  <xacro:include filename="/home/terunuma/ros2-balancing-cube/src/cube_description/urdf/body.urdf.xacro"/>
+  <xacro:include filename="/home/terunuma/ros2-balancing-cube/src/cube_description/urdf/module.urdf.xacro"/>
+  <xacro:include filename="/home/terunuma/ros2-balancing-cube/src/cube_description/urdf/module_joint.urdf.xacro"/>
+
+  <!-- Define parameters -->
+  <xacro:arg name="color" default="grey"/>
+  <xacro:property name="t" value="0.003"/>
+  <xacro:property name="l" value="0.075"/>
+
+  <link name="base_link"/>
+
+  <!-- Joint Setting -->
+  <joint name="body_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="body_link"/>
+  </joint>
+
+  <xacro:module_joint parent="body_link" index="1">
+    <origin xyz="${-l} ${l} ${t}" rpy = "0 0 0"/>
+  </xacro:module_joint>
+  <xacro:module_joint parent="body_link" index="2">
+    <origin xyz="${-l} ${2*l-t} ${l}" rpy = "${pi/2} 0 0"/>
+  </xacro:module_joint>
+  <xacro:module_joint parent="body_link" index="3">
+    <origin xyz="${-l} ${t} ${l}" rpy = "${-pi/2} 0 0"/>
+  </xacro:module_joint>
+  <xacro:module_joint parent="body_link" index="4">
+    <origin xyz="${-2*l+t} ${l} ${l}" rpy = "0 ${pi/2} 0"/>
+  </xacro:module_joint>
+  <xacro:module_joint parent="body_link" index="5">
+    <origin xyz="${-t} ${l} ${l}" rpy = "0 ${-pi/2} 0"/>
+  </xacro:module_joint>
+  <xacro:module_joint parent="body_link" index="6">
+    <origin xyz="${-l} ${l} ${2*l-t}" rpy = "${pi} 0 0"/>
+  </xacro:module_joint>
+
+  <!-- Link Setting -->
+  <xacro:body/>
+
+  <xacro:module index="1"/>
+  <xacro:module index="2"/>
+  <xacro:module index="3"/>
+  <xacro:module index="4"/>
+  <xacro:module index="5"/>
+  <xacro:module index="6"/>
+
+</robot>
