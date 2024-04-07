@@ -9,6 +9,48 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(cube_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(xacro REQUIRED)
+
+file(GLOB SRC src/*.cpp src/*/*.cpp)
+
+add_library(CUBE_DESCRIPTION SHARED ${SRC})
+
+target_include_directories(CUBE_DESCRIPTION PUBLIC
+  # include
+  meshes
+  /usr/local/include
+  $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>
+)
+
+ament_target_dependencies(CUBE_DESCRIPTION
+  rclcpp
+  std_msgs
+  sensor_msgs
+  geometry_msgs
+  cube_msgs
+  tf2
+  tf2_ros
+)
+
+add_executable(cube_description_node src/cube_description_node.cpp)
+
+target_link_libraries(cube_description_node CUBE_DESCRIPTION)
+
+install(TARGETS
+  cube_description_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME})
+
+install(DIRECTORY meshes
+  DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

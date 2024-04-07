@@ -1,0 +1,31 @@
+<launch>
+  <arg name="rviz" default="true"/>
+  <arg name="directory_bag" default="/home/terunuma/ros2-balancing-cube/src/cube_description/rosbag"/>
+  <arg name="bag_filename" default="cube_bag"/>
+  <arg name="record" default="true"/>
+  <arg name="play" default="false"/>
+
+  <arg name="model" default="/home/terunuma/ros2-balancing-cube/src/cube_description/urdf/cube.urdf.xacro"/>
+
+  <!-- Setting for Rviz2 -->
+  <!-- <arg name="rvizconfig" default="$(find-pkg-share urdf_tutorial)/rviz2/urdf.rviz"/> -->
+  <arg name="rvizconfig" default="/home/terunuma/ros2-balancing-cube/src/cube_description/rviz/cube_description.rviz"/>
+  <node pkg="rviz2" exec="rviz2" name="rviz2" output="screen" args="-d $(var rvizconfig)" if="$(var rviz)"/>
+  
+  <!-- Setting for playback -->
+  <!-- <group if="$(var play)"> -->
+    <!-- <node name="play_bag" pkg="rosbag" exec="play" args="$(var directory_bag)/$(var bag_filename).bag" output="screen"/> -->
+  <!-- </group> -->
+  <group unless="$(var play)">
+    <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher">
+      <param name="robot_description" value="$(command 'xacro $(var model)' 'warn')" />
+      <!-- <param name="robot_description" value="$(command '/opt/ros/humble/bin/xacro $(var model)' 'warn')" /> -->
+    </node>
+    <node name="cube_description_node" pkg="cube_description" exec="cube_description_node" output="screen"/>
+    
+    <!-- ROS Bag Record -->
+    <!-- <node name="record_bag" pkg="ros2bag" exec="record" args="-a -O $(var directory_bag)/$(var bag_filename)" if="$(var record)" output="screen"/>  -->
+    <!-- <executable cmd="ros2 bag record -a -O $(var directory_bag)/$(var bag_filename)" output="screen" if="$(var record)"/> -->
+    <!-- <executable cmd="ros2 bag record -a" output="screen" if="$(var record)"/> -->
+  </group>
+</launch>
