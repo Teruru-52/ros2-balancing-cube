@@ -9,6 +9,45 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(cube_msgs REQUIRED)
+find_package(Eigen3 REQUIRED)
+
+include_directories(
+  include
+  # ${Boost INCLUDE_DIRS}
+)
+
+file(GLOB SRC src/*.cpp src/*/*.cpp)
+
+add_library(CUBE_INTERFACES SHARED ${SRC})
+
+target_include_directories(CUBE_INTERFACES PUBLIC
+  include
+  /usr/local/include
+  $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>
+)
+
+ament_target_dependencies(CUBE_INTERFACES
+  rclcpp
+  std_msgs
+  geometry_msgs
+  sensor_msgs
+  cube_msgs
+)
+
+add_executable(cube_interfaces_node src/cube_interfaces_node.cpp src/controller.cpp)
+
+target_link_libraries(cube_interfaces_node CUBE_INTERFACES)
+
+install(TARGETS
+  cube_interfaces_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
