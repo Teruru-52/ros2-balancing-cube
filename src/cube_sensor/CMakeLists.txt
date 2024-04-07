@@ -10,7 +10,9 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(cube_msgs REQUIRED)
+find_package(Eigen3 REQUIRED)
 # find_package(Boost REQUIRED COMPONENTS system)
 
 include_directories(
@@ -25,16 +27,18 @@ add_library(CUBE_SENSOR SHARED ${SRC})
 target_include_directories(CUBE_SENSOR PUBLIC
   include
   /usr/local/include
+  $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>
 )
 
 ament_target_dependencies(CUBE_SENSOR
   rclcpp
   std_msgs
+  geometry_msgs
   sensor_msgs
   cube_msgs
 )
 
-add_executable(cube_sensor_node src/cube_sensor_node.cpp)
+add_executable(cube_sensor_node src/cube_sensor_node.cpp src/state_estimator.cpp src/tilt_estimator.cpp)
 
 target_link_libraries(cube_sensor_node CUBE_SENSOR)
 
